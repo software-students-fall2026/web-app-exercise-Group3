@@ -7,7 +7,24 @@
     <title>Student Assignment Tracker</title>
 </head>
 <body>
-    <h1>Student Assignment Tracker</h1>
-    <p>Flask is running successfully!</p>
+    <h1>Campus Board</h1>
+
+    {% if items %}
+        {% for item in items %}
+            <div>
+                {% for key, value in item.items() %}
+                    {% if key != "_id" %}
+                        <p>
+                            <strong>{{ key }}:</strong>
+                            {{ value }}
+                        </p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No items available yet.</p>
+    {% endif %}
 </body>
 </html>
