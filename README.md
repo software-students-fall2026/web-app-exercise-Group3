@@ -1,10 +1,10 @@
 # Web Application Exercise
 
-A student assignment tracker web app built with Flask, MongoDB, HTML, and CSS.
+A campus lost-and-found board web app built with Flask, MongoDB, HTML, and CSS.
 
 ## Product vision statement
 
-A web app that helps students keep track of their assignments, deadlines, and progress in one place.
+A web app that helps students report lost or found items on campus and find items they are looking for.
 
 ## User stories
 
@@ -12,47 +12,82 @@ User stories are tracked in the [GitHub Issues](https://github.com/software-stud
 
 ## Steps necessary to run the software
 
-1. Clone the repository:
+### 1. Clone the repository
 
-   ```bash
-   git clone https://github.com/software-students-fall2026/web-app-exercise-Group3.git
-   cd web-app-exercise-Group3
-   ```
+```bash
+git clone https://github.com/software-students-fall2026/web-app-exercise-Group3.git
+cd web-app-exercise-Group3
+```
 
-2. Run the repository setup script:
+### 2. Run the repository setup script
 
-   ```bash
-   python3 .automations/setup.py
-   ```
+```bash
+python3 .automations/setup.py
+```
 
-3. Create and activate a virtual environment:
+### 3. Create and activate a virtual environment
 
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-4. Install the required packages:
+### 4. Install the required packages
 
-   ```bash
-   python -m pip install -r requirements.txt
-   ```
+```bash
+python -m pip install -r requirements.txt
+```
 
-5. Create the environment file:
+### 5. Create the environment file
 
-   ```bash
-   cp env.example .env
-   ```
+```bash
+cp env.example .env
+```
 
-6. Start the Flask application:
+The default database configuration is:
 
-   ```bash
-   python app.py
-   ```
+```text
+MONGO_URI=mongodb://localhost:27017/
+MONGO_DB_NAME=campus_board
+```
 
-7. Open `http://127.0.0.1:5000` in your browser.
+### 6. Start MongoDB with Docker
 
-The MongoDB database will run locally using Docker. Database setup instructions will be added once the team finishes configuring Docker.
+Make sure Docker Desktop is installed and running.
+
+```bash
+docker compose up -d
+```
+
+Verify that MongoDB is running:
+
+```bash
+docker compose ps
+```
+
+### 7. Start the Flask application
+
+```bash
+python app.py
+```
+
+Open http://127.0.0.1:5000 in your browser.
+
+The homepage retrieves and displays records from MongoDB.
+
+If the collection is empty, the page displays "No items available yet."
+
+### 8. Stop the application
+
+Stop Flask by pressing `Ctrl + C` in the terminal where it is running.
+
+To stop MongoDB:
+
+```bash
+docker compose down
+```
+
+The database data is preserved in the Docker volume.
 
 ## Task boards
 
