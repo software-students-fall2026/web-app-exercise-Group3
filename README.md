@@ -75,7 +75,7 @@ Open http://127.0.0.1:5000 in your browser.
 
 The homepage retrieves and displays records from MongoDB.
 
-If the collection is empty, the page displays "No items available yet."
+If the collection is empty, the page displays "No posts available yet."
 
 ### 8. Stop the application
 
