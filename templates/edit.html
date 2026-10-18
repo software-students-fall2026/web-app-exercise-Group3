@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<h1>Edit Post</h1>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    <p>
+        <label>Item name<br>
+            <input type="text" name="item_name" value="{{ post.item_name }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Description<br>
+            <textarea name="description">{{ post.description }}</textarea>
+        </label>
+    </p>
+
+    <p>
+        <label>Category<br>
+            <select name="category">
+                <option value="lost" {% if post.category == "lost" %}selected{% endif %}>Lost</option>
+                <option value="found" {% if post.category == "found" %}selected{% endif %}>Found</option>
+            </select>
+        </label>
+    </p>
+
+    <p>
+        <label>Location<br>
+            <input type="text" name="location" value="{{ post.location }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Date<br>
+            <input type="date" name="date" value="{{ post.date }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Contact information<br>
+            <input type="text" name="contact" value="{{ post.contact }}">
+        </label>
+    </p>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+{% if post.resolved %}
+    <p>This post has been marked as resolved.</p>
+{% else %}
+    <form method="POST" action="{{ url_for('resolve_post', post_id=post_id) }}">
+        <button type="submit">Mark as Resolved</button>
+    </form>
+{% endif %}
+
+<p><a href="{{ url_for('home') }}">Back to all posts</a></p>
+
+{% endblock %}

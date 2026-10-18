@@ -21,6 +21,7 @@
                         </p>
                     {% endif %}
                 {% endfor %}
+                <a href="{{ url_for('edit_post', post_id=item._id) }}">Edit</a>
             </article>
         {% endfor %}
     {% else %}

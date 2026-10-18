@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Search | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<h1>Search Posts</h1>
+
+<form method="GET" action="{{ url_for('search') }}">
+    <input type="text" name="keyword" placeholder="Item name" value="{{ keyword }}">
+
+    <select name="category">
+        <option value="">All</option>
+        <option value="lost" {% if category == "lost" %}selected{% endif %}>Lost</option>
+        <option value="found" {% if category == "found" %}selected{% endif %}>Found</option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+<section class="posts">
+    {% if items %}
+        {% for item in items %}
+            <article class="post-card">
+                {% for key, value in item.items() %}
+                    {% if key != "_id" %}
+                        <p>
+                            <strong>{{ key | replace("_", " ") | title }}:</strong>
+                            {{ value }}
+                        </p>
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ url_for('edit_post', post_id=item._id) }}">Edit</a>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">No matching posts found.</p>
+    {% endif %}
+</section>
+
+{% endblock %}
