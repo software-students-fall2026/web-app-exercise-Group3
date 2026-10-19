@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import Flask, render_template, request, redirect, url_for, abort
 from pymongo import MongoClient
@@ -61,6 +62,68 @@ def item_delete(item_id):
         return redirect(url_for("home"))
 
     return render_template("delete.html", item=item)
+
+#Edit a post
+@app.route("/item/<item_id>/edit", methods=["GET", "POST"])
+def item_edit(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
+
+    if request.method == "POST":
+        updated = {
+            "item_name": request.form.get("item_name", "").strip(),
+            "description": request.form.get("description", "").strip(),
+            "status": request.form.get("status", "").strip(),
+            "location": request.form.get("location", "").strip(),
+            "date_reported": request.form.get("date_reported", "").strip(),
+            "contact_email": request.form.get("contact_email", "").strip(),
+        }
+
+        if "" in updated.values():
+            updated["_id"] = item["_id"]
+            return render_template(
+                "edit.html",
+                item=updated,
+                error="Please fill in all fields."
+            )
+
+        collection.update_one({"_id": item["_id"]}, {"$set": updated})
+        return redirect(url_for("item_detail", item_id=item_id))
+
+    return render_template("edit.html", item=item)
+
+
+#Mark a post as resolved
+@app.route("/item/<item_id>/resolve", methods=["POST"])
+def item_resolve(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
+
+    collection.update_one({"_id": item["_id"]}, {"$set": {"resolved": True}})
+    return redirect(url_for("item_detail", item_id=item_id))
+
+
+#Search by item name and filter by lost/found
+@app.route("/search")
+def search():
+    keyword = request.args.get("keyword", "").strip()
+    status = request.args.get("status", "")
+
+    query = {}
+    if keyword:
+        query["item_name"] = {"$regex": re.escape(keyword), "$options": "i"}
+    if status in ("lost", "found"):
+        query["status"] = status
+
+    items = list(collection.find(query))
+    return render_template(
+        "search.html",
+        items=items,
+        keyword=keyword,
+        status=status
+    )
 
 #Missing posts and unknown URLs
 @app.errorhandler(404)
