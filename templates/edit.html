@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h1>Edit Post</h1>
+<section class="page-heading">
+    <h1>Edit Post</h1>
+</section>
 
 {% if error %}
     <p>{{ error }}</p>
@@ -13,54 +15,46 @@
 <form method="POST">
     <p>
         <label>Item name<br>
-            <input type="text" name="item_name" value="{{ post.item_name }}">
+            <input type="text" name="item_name" value="{{ item.item_name }}">
         </label>
     </p>
 
     <p>
         <label>Description<br>
-            <textarea name="description">{{ post.description }}</textarea>
+            <textarea name="description">{{ item.description }}</textarea>
         </label>
     </p>
 
     <p>
-        <label>Category<br>
-            <select name="category">
-                <option value="lost" {% if post.category == "lost" %}selected{% endif %}>Lost</option>
-                <option value="found" {% if post.category == "found" %}selected{% endif %}>Found</option>
+        <label>Lost or found<br>
+            <select name="status">
+                <option value="lost" {% if item.status == "lost" %}selected{% endif %}>Lost</option>
+                <option value="found" {% if item.status == "found" %}selected{% endif %}>Found</option>
             </select>
         </label>
     </p>
 
     <p>
         <label>Location<br>
-            <input type="text" name="location" value="{{ post.location }}">
+            <input type="text" name="location" value="{{ item.location }}">
         </label>
     </p>
 
     <p>
-        <label>Date<br>
-            <input type="date" name="date" value="{{ post.date }}">
+        <label>Date reported<br>
+            <input type="date" name="date_reported" value="{{ item.date_reported }}">
         </label>
     </p>
 
     <p>
-        <label>Contact information<br>
-            <input type="text" name="contact" value="{{ post.contact }}">
+        <label>Contact email<br>
+            <input type="email" name="contact_email" value="{{ item.contact_email }}">
         </label>
     </p>
 
-    <button type="submit">Save Changes</button>
+    <button class="btn" type="submit">Save Changes</button>
 </form>
 
-{% if post.resolved %}
-    <p>This post has been marked as resolved.</p>
-{% else %}
-    <form method="POST" action="{{ url_for('resolve_post', post_id=post_id) }}">
-        <button type="submit">Mark as Resolved</button>
-    </form>
-{% endif %}
-
-<p><a href="{{ url_for('home') }}">Back to all posts</a></p>
+<p><a href="{{ url_for('item_detail', item_id=item._id) }}">Cancel</a></p>
 
 {% endblock %}

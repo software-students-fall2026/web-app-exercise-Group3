@@ -1,11 +1,11 @@
 import os
 import re
 
-from bson.objectid import ObjectId
-from bson.errors import InvalidId
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
 # Load environment variables
 load_dotenv()
@@ -32,78 +32,103 @@ def home():
     items = list(collection.find())
     return render_template("index.html", items=items)
 
-
-# ---------- Edit + search ----------
-def get_post(post_id):
-    """Find one post by its id. Returns None if the id is invalid or not found."""
+#Look up a single item, tolerating ids that aren't valid ObjectIds
+def find_item(item_id):
     try:
-        return collection.find_one({"_id": ObjectId(post_id)})
+        item = collection.find_one({"_id": ObjectId(item_id)})
+        return item
     except InvalidId:
         return None
 
+#Item detail route
+@app.route("/item/<item_id>")
+def item_detail(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
+    return render_template("item.html", item=item)
 
-# Edit a post
-@app.route("/edit/<post_id>", methods=["GET", "POST"])
-def edit_post(post_id):
-    post = get_post(post_id)
-    if post is None:
-        return "Post not found.", 404
+#Delete confirmationa and deletion
+@app.route("/item/<item_id>/delete", methods=["GET", "POST"])
+def item_delete(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
+
+    if request.method == "POST":
+        result = collection.delete_one({"_id": item["_id"]})
+        if result.deleted_count == 0:
+            abort(404)
+        return redirect(url_for("home"))
+
+    return render_template("delete.html", item=item)
+
+#Edit a post
+@app.route("/item/<item_id>/edit", methods=["GET", "POST"])
+def item_edit(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
 
     if request.method == "POST":
         updated = {
             "item_name": request.form.get("item_name", "").strip(),
             "description": request.form.get("description", "").strip(),
-            "category": request.form.get("category", "").strip(),
+            "status": request.form.get("status", "").strip(),
             "location": request.form.get("location", "").strip(),
-            "date": request.form.get("date", "").strip(),
-            "contact": request.form.get("contact", "").strip(),
+            "date_reported": request.form.get("date_reported", "").strip(),
+            "contact_email": request.form.get("contact_email", "").strip(),
         }
 
-        # all fields required
         if "" in updated.values():
+            updated["_id"] = item["_id"]
             return render_template(
                 "edit.html",
-                post=updated,
-                post_id=post_id,
+                item=updated,
                 error="Please fill in all fields."
             )
 
-        collection.update_one({"_id": post["_id"]}, {"$set": updated})
-        return redirect(url_for("home"))
+        collection.update_one({"_id": item["_id"]}, {"$set": updated})
+        return redirect(url_for("item_detail", item_id=item_id))
 
-    return render_template("edit.html", post=post, post_id=post_id)
-
-
-#mark a post as resolved
-@app.route("/resolve/<post_id>", methods=["POST"])
-def resolve_post(post_id):
-    post = get_post(post_id)
-    if post is None:
-        return "Post not found.", 404
-
-    collection.update_one({"_id": post["_id"]}, {"$set": {"resolved": True}})
-    return redirect(url_for("home"))
+    return render_template("edit.html", item=item)
 
 
-#search by item name and filter by lost/found
+#Mark a post as resolved
+@app.route("/item/<item_id>/resolve", methods=["POST"])
+def item_resolve(item_id):
+    item = find_item(item_id)
+    if item is None:
+        abort(404)
+
+    collection.update_one({"_id": item["_id"]}, {"$set": {"resolved": True}})
+    return redirect(url_for("item_detail", item_id=item_id))
+
+
+#Search by item name and filter by lost/found
 @app.route("/search")
 def search():
     keyword = request.args.get("keyword", "").strip()
-    category = request.args.get("category", "")
+    status = request.args.get("status", "")
 
     query = {}
     if keyword:
         query["item_name"] = {"$regex": re.escape(keyword), "$options": "i"}
-    if category in ("lost", "found"):
-        query["category"] = category
+    if status in ("lost", "found"):
+        query["status"] = status
 
     items = list(collection.find(query))
     return render_template(
         "search.html",
         items=items,
         keyword=keyword,
-        category=category
+        status=status
     )
+
+#Missing posts and unknown URLs
+@app.errorhandler(404)
+def not_found(error):
+    return render_template("404.html"), 404
 
 # Start the development server
 if __name__ == "__main__":

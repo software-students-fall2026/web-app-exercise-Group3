@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Deletion | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>Delete this post?</h1>
+    <p>This cannot be undone.</p>
+</section>
+
+<article class="post-card">
+    <p><strong>{{ item.item_name }}</strong></p>
+    <p>{{ item.status | title }} &middot; {{ item.location or "No location" }}</p>
+</article>
+
+<div class="detail-actions">
+    <a class="btn btn-secondary"
+       href="{{ url_for('item_detail', item_id=item._id) }}">Cancel</a>
+
+    <form action="{{ url_for('item_delete', item_id=item._id) }}" method="POST">
+        <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+</div>
+
+{% endblock %}

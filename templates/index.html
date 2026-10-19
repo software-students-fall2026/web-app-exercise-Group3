@@ -12,7 +12,7 @@
 <section class="posts">
     {% if items %}
         {% for item in items %}
-            <article class="post-card">
+            <a class="post-card" href="{{ url_for('item_detail', item_id=item._id) }}">
                 {% for key, value in item.items() %}
                     {% if key != "_id" %}
                         <p>
@@ -21,8 +21,7 @@
                         </p>
                     {% endif %}
                 {% endfor %}
-                <a href="{{ url_for('edit_post', post_id=item._id) }}">Edit</a>
-            </article>
+            </a>
         {% endfor %}
     {% else %}
         <p class="empty-message">

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Post Not Found | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>Post not found</h1>
+    <p>That post may have been deleted or the link may be incorrect.</p>
+</section>
+
+<a class="btn btn-secondary" href="{{ url_for('home') }}">Back to all posts</a>
+
+{% endblock %}
