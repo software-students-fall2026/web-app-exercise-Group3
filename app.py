@@ -28,7 +28,7 @@ collection = db["items"]
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find())
+    items = list(collection.find().sort("_id", -1))
     return render_template("index.html", items=items)
 
 #Look up a single item, tolerating ids that aren't valid ObjectIds

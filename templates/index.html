@@ -17,7 +17,9 @@
 
                 <p>
                     <strong>Status:</strong>
-                    {{ (item.get('status') or 'Unknown') | title }}
+                    <span class="status-badge status-{{ (item.get('status') or '') | lower }}">
+                        {{ (item.get('status') or 'Unknown') | title }}
+                    </span>
                 </p>
 
                 <p>
@@ -32,7 +34,7 @@
 
                 <p>
                     <strong>Description:</strong>
-                    {{ item.get('description') or 'Not provided' }}
+                    {{ (item.get('description') or 'Not provided') | truncate(100) }}
                 </p>
 
             </a>
