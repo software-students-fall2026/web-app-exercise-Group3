@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.item_name }} | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>{{ item.item_name }}</h1>
+    <p class="status-badge status-{{ item.status }}">{{ item.status | title }}</p>
+</section>
+
+<article class="item-detail">
+    <p><strong>Description:</strong> {{ item.description or "Not provided" }}</p>
+    <p><strong>Location:</strong> {{ item.location or "Not provided" }}</p>
+    <p><strong>Date reported:</strong> {{ item.date_reported or "Not provided" }}</p>
+
+    <h2>Contact</h2>
+    {% if item.contact_email %}
+        <p><a href="mailto:{{ item.contact_email }}">{{ item.contact_email }}</a></p>
+    {% else %}
+        <p>No contact information provided.</p>
+    {% endif %}
+</article>
+
+<div class="detail-actions">
+    <a class="btn btn-secondary" href="{{ url_for('home') }}">Back to all posts</a>
+    <a class="btn btn-danger" href="{{ url_for('item_delete', item_id=item._id) }}">Delete this post</a>
+</div>
+
+{% endblock %}
