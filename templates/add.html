@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Add Post - Lost & Found{% endblock %}
+
+{% block content %}
+
+<h1>Add a Lost or Found Item</h1>
+
+<p>Fill out the form below to report an item.</p>
+
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST" action="{{ url_for('add_post') }}">
+
+    <label for="item_name">Item Name:</label>
+    <input type="text" id="item_name"
+           name="item_name" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description"
+              name="description" required></textarea>
+
+    <label for="status">Lost or Found:</label>
+    <select id="status" name="status" required>
+        <option value="">Select an option</option>
+        <option value="lost">Lost</option>
+        <option value="found">Found</option>
+    </select>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location"
+           name="location" required>
+
+    <label for="date_reported">Date:</label>
+    <input type="date" id="date_reported"
+           name="date_reported" required>
+
+    <label for="contact_email">Contact Email:</label>
+    <input type="email" id="contact_email"
+           name="contact_email" required>
+
+    <button type="submit">Submit Post</button>
+
+</form>
+
+{% endblock %}

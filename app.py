@@ -31,6 +31,45 @@ def home():
     items = list(collection.find())
     return render_template("index.html", items=items)
 
+# Add a new lost or found item
+@app.route("/add", methods=["GET", "POST"])
+def add_post():
+    if request.method == "POST":
+        item_name = request.form.get("item_name", "").strip()
+        description = request.form.get("description", "").strip()
+        status = request.form.get("status", "").strip()
+        location = request.form.get("location", "").strip()
+        date_reported = request.form.get("date_reported", "").strip()
+        contact_email = request.form.get("contact_email", "").strip()
+
+        # Make sure all fields are filled out
+        if (not item_name or not description or
+            status not in ["lost", "found"] or
+            not location or not date_reported or
+            not contact_email):
+            return render_template(
+                "add.html",
+                error="Please fill out all fields."
+            ), 400
+
+        # Create the new post
+        new_post = {
+            "item_name": item_name,
+            "description": description,
+            "status": status,
+            "location": location,
+            "date_reported": date_reported,
+            "contact_email": contact_email
+        }
+
+        # Save to MongoDB
+        collection.insert_one(new_post)
+
+        # Return to homepage
+        return redirect(url_for("home"))
+
+    return render_template("add.html")
+
 #Look up a single item, tolerating ids that aren't valid ObjectIds
 def find_item(item_id):
     try:
