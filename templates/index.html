@@ -13,14 +13,30 @@
     {% if items %}
         {% for item in items %}
             <a class="post-card" href="{{ url_for('item_detail', item_id=item._id) }}">
-                {% for key, value in item.items() %}
-                    {% if key != "_id" %}
-                        <p>
-                            <strong>{{ key | replace("_", " ") | title  }}:</strong>
-                            {{ value }}
-                        </p>
-                    {% endif %}
-                {% endfor %}
+                <h2>{{ item.get('item_name') or item.get('title') or 'Unnamed item' }}</h2>
+
+                <p>
+                    <strong>Status:</strong>
+                    <span class="status-badge status-{{ (item.get('status') or '') | lower }}">
+                        {{ (item.get('status') or 'Unknown') | title }}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ item.get('location') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>Date reported:</strong>
+                    {{ item.get('date_reported') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ (item.get('description') or 'Not provided') | truncate(100) }}
+                </p>
+
             </a>
         {% endfor %}
     {% else %}

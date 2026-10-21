@@ -7,6 +7,9 @@
 <section class="page-heading">
     <h1>{{ item.item_name }}</h1>
     <p class="status-badge status-{{ item.status }}">{{ item.status | title }}</p>
+    {% if item.resolved %}
+        <p><strong>This item has been resolved.</strong></p>
+    {% endif %}
 </section>
 
 <article class="item-detail">
@@ -24,6 +27,12 @@
 
 <div class="detail-actions">
     <a class="btn btn-secondary" href="{{ url_for('home') }}">Back to all posts</a>
+    <a class="btn" href="{{ url_for('item_edit', item_id=item._id) }}">Edit this post</a>
+    {% if not item.resolved %}
+        <form action="{{ url_for('item_resolve', item_id=item._id) }}" method="POST">
+            <button class="btn" type="submit">Mark as Resolved</button>
+        </form>
+    {% endif %}
     <a class="btn btn-danger" href="{{ url_for('item_delete', item_id=item._id) }}">Delete this post</a>
 </div>
 
