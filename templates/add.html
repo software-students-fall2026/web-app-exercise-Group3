@@ -1,48 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}Add Post - Lost & Found{% endblock %}
+{% block title %}Add Post | Campus Lost & Found{% endblock %}
 
 {% block content %}
 
-<h1>Add a Lost or Found Item</h1>
-
-<p>Fill out the form below to report an item.</p>
+<section class="page-heading">
+    <h1>Add Post</h1>
+    <p>Report an item you lost or found on campus.</p>
+</section>
 
 {% if error %}
-<p style="color: red;">{{ error }}</p>
+    <p>{{ error }}</p>
 {% endif %}
 
-<form method="POST" action="{{ url_for('add_post') }}">
+<form method="POST">
+    <p>
+        <label>Item name<br>
+            <input type="text" name="item_name" value="{{ item.item_name }}">
+        </label>
+    </p>
 
-    <label for="item_name">Item Name:</label>
-    <input type="text" id="item_name"
-           name="item_name" required>
+    <p>
+        <label>Description<br>
+            <textarea name="description">{{ item.description }}</textarea>
+        </label>
+    </p>
 
-    <label for="description">Description:</label>
-    <textarea id="description"
-              name="description" required></textarea>
+    <p>
+        <label>Lost or found<br>
+            <select name="status">
+                <option value="lost" {% if item.status == "lost" %}selected{% endif %}>Lost</option>
+                <option value="found" {% if item.status == "found" %}selected{% endif %}>Found</option>
+            </select>
+        </label>
+    </p>
 
-    <label for="status">Lost or Found:</label>
-    <select id="status" name="status" required>
-        <option value="">Select an option</option>
-        <option value="lost">Lost</option>
-        <option value="found">Found</option>
-    </select>
+    <p>
+        <label>Location<br>
+            <input type="text" name="location" value="{{ item.location }}">
+        </label>
+    </p>
 
-    <label for="location">Location:</label>
-    <input type="text" id="location"
-           name="location" required>
+    <p>
+        <label>Date reported<br>
+            <input type="date" name="date_reported" value="{{ item.date_reported }}">
+        </label>
+    </p>
 
-    <label for="date_reported">Date:</label>
-    <input type="date" id="date_reported"
-           name="date_reported" required>
+    <p>
+        <label>Contact email<br>
+            <input type="email" name="contact_email" value="{{ item.contact_email }}">
+        </label>
+    </p>
 
-    <label for="contact_email">Contact Email:</label>
-    <input type="email" id="contact_email"
-           name="contact_email" required>
-
-    <button type="submit">Submit Post</button>
-
+    <button class="btn" type="submit">Add Post</button>
 </form>
+
+<p><a href="{{ url_for('home') }}">Cancel</a></p>
 
 {% endblock %}

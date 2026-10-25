@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}History | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>History</h1>
+    <p>View returned and resolved items.</p>
+</section>
+
+<section class="posts">
+    {% if items %}
+        {% for item in items %}
+            <a class="post-card admin-post-card"
+               href="{{ url_for('item_detail', item_id=item._id) }}">
+
+                <div class="history-card-header">
+                    <h2>{{ item.get('item_name') or 'Unnamed item' }}</h2>
+                    {% if item.get('returned') %}
+                        <span class="status-badge status-returned">
+                            Returned
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-resolved">
+                            Resolved
+                        </span>
+                    {% endif %}
+                </div>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ item.get('location') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>Date reported:</strong>
+                    {{ item.get('date_reported') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>
+                        {% if item.get('returned') %}
+                            Date returned:
+                        {% else %}
+                            Date resolved:
+                        {% endif %}
+                    </strong>
+                
+                    {% if item.get('completed_at') %}
+                        {{ item.completed_at.strftime('%Y-%m-%d')
+                           if item.completed_at.strftime is defined
+                           else item.completed_at }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ (item.get('description') or 'Not provided') | truncate(100) }}
+                </p>
+
+                <span class="view-details">View Details →</span>
+
+            </a>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">
+            No returned or resolved items yet.
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}
