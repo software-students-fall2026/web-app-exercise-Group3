@@ -93,4 +93,4 @@ The database data is preserved in the Docker volume.
 
 [Group 3 - Sprint 1](https://github.com/orgs/software-students-fall2026/projects/37/views/1)
 
-Sprint 2 board: To be added.
+[Group 3 - Sprint 2](https://github.com/orgs/software-students-fall2026/projects/61/views/1)
