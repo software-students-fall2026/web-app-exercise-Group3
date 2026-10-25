@@ -6,20 +6,26 @@
 
 <section class="page-heading">
     <h1>History</h1>
-    <p>View items that have been returned.</p>
+    <p>View returned and resolved items.</p>
 </section>
 
 <section class="posts">
     {% if items %}
         {% for item in items %}
-            <a class="post-card"
+            <a class="post-card admin-post-card"
                href="{{ url_for('item_detail', item_id=item._id) }}">
 
                 <div class="history-card-header">
                     <h2>{{ item.get('item_name') or 'Unnamed item' }}</h2>
-                    <span class="status-badge status-returned">
-                        Returned
-                    </span>
+                    {% if item.get('returned') %}
+                        <span class="status-badge status-returned">
+                            Returned
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-resolved">
+                            Resolved
+                        </span>
+                    {% endif %}
                 </div>
 
                 <p>
@@ -33,14 +39,21 @@
                 </p>
 
                 <p>
-                  <strong>Date returned:</strong>
-                  {% if item.get('date_returned') %}
-                      {{ item.date_returned.strftime('%Y-%m-%d')
-                         if item.date_returned.strftime is defined
-                         else item.date_returned }}
-                  {% else %}
-                      Not provided
-                  {% endif %}
+                    <strong>
+                        {% if item.get('returned') %}
+                            Date returned:
+                        {% else %}
+                            Date resolved:
+                        {% endif %}
+                    </strong>
+                
+                    {% if item.get('completed_at') %}
+                        {{ item.completed_at.strftime('%Y-%m-%d')
+                           if item.completed_at.strftime is defined
+                           else item.completed_at }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
                 </p>
 
                 <p>
@@ -54,7 +67,7 @@
         {% endfor %}
     {% else %}
         <p class="empty-message">
-            No returned items yet.
+            No returned or resolved items yet.
         </p>
     {% endif %}
 </section>

@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
+from datetime import datetime, timezone
 
 # Load environment variables
 load_dotenv()
@@ -56,13 +57,38 @@ def home():
 # History page - admin only
 @app.route("/history")
 def history():
-    if not os.getenv("ADMIN_MODE") == "1":
+    if os.getenv("ADMIN_MODE") != "1":
         abort(403)
 
-    items = list(
-        collection.find({"returned": True})
-        .sort("date_returned", -1)
-    )
+    pipeline = [
+        {
+            "$match": {
+                "$or": [
+                    {"returned": True},
+                    {"resolved": True}
+                ]
+            }
+        },
+        {
+            "$addFields": {
+                "completed_at": {
+                    "$ifNull": [
+                        "$date_returned",
+                        "$date_resolved"
+                    ]
+                }
+            }
+        },
+        {
+            "$sort": {
+                "completed_at": -1,
+                "_id": -1
+            }
+        }
+    ]
+
+    items = list(collection.aggregate(pipeline))
+
     return render_template("history.html", items=items)
 
 # Add a new lost or found post
@@ -154,14 +180,47 @@ def item_edit(item_id):
     return render_template("edit.html", item=item)
 
 
-#Mark a post as resolved
+# Complete a lost or found case - admin only
 @app.route("/item/<item_id>/resolve", methods=["POST"])
 def item_resolve(item_id):
+    if os.getenv("ADMIN_MODE") != "1":
+        abort(403)
+
     item = find_item(item_id)
+
     if item is None:
         abort(404)
 
-    collection.update_one({"_id": item["_id"]}, {"$set": {"resolved": True}})
+    if item.get("returned") or item.get("resolved"):
+        return redirect(url_for("item_detail", item_id=item_id))
+
+    now = datetime.now(timezone.utc)
+
+    if item.get("status") == "found":
+        update = {
+            "$set": {
+                "returned": True,
+                "resolved": False,
+                "date_returned": now
+            },
+            "$unset": {"date_resolved": ""}
+        }
+
+    elif item.get("status") == "lost":
+        update = {
+            "$set": {
+                "resolved": True,
+                "returned": False,
+                "date_resolved": now
+            },
+            "$unset": {"date_returned": ""}
+        }
+
+    else:
+        abort(400)
+
+    collection.update_one({"_id": item["_id"]}, update)
+
     return redirect(url_for("item_detail", item_id=item_id))
 
 
@@ -184,6 +243,36 @@ def search():
         keyword=keyword,
         status=status
     )
+
+# Return a completed case to active status
+@app.route("/item/<item_id>/unresolve", methods=["POST"])
+def item_unresolve(item_id):
+    if os.getenv("ADMIN_MODE") != "1":
+        abort(403)
+
+    item = find_item(item_id)
+
+    if item is None:
+        abort(404)
+
+    if not (item.get("returned") or item.get("resolved")):
+        abort(400)
+
+    collection.update_one(
+        {"_id": item["_id"]},
+        {
+            "$set": {
+                "returned": False,
+                "resolved": False
+            },
+            "$unset": {
+                "date_returned": "",
+                "date_resolved": ""
+            }
+        }
+    )
+
+    return redirect(url_for("item_detail", item_id=item_id))
 
 #Missing posts and unknown URLs
 @app.errorhandler(404)

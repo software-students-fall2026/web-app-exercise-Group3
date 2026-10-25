@@ -399,3 +399,70 @@ body {
       font-size: 12px;
   }
 }
+
+/* Admin detail actions */
+
+.admin-detail-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-detail-actions .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 46px;
+  padding: 10px;
+
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Make the form fill its grid cell */
+
+.admin-detail-actions form {
+  width: 100%;
+  margin: 0;
+}
+
+/* Back, Edit, Mark Returned */
+
+.admin-detail-actions .btn:not(.btn-danger):hover {
+  background-color: #f3f4f6;
+}
+
+/* Delete button */
+
+.admin-detail-actions .btn-danger {
+  background-color: #b91c1c;
+  color: white;
+  border: 1px solid #b91c1c;
+}
+
+.admin-detail-actions .btn-danger:hover {
+  background-color: #991b1b;
+}
+
+/* Keyboard accessibility */
+
+.admin-detail-actions .btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.status-resolved {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}

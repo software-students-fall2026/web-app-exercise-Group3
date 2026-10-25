@@ -7,7 +7,9 @@
 <section class="page-heading">
     <h1>{{ item.item_name }}</h1>
     <p class="status-badge status-{{ item.status }}">{{ item.status | title }}</p>
-    {% if item.resolved %}
+    {% if item.get('returned') %}
+        <p><strong>This item has been returned.</strong></p>
+    {% elif item.resolved %}
         <p><strong>This item has been resolved.</strong></p>
     {% endif %}
 </section>
@@ -25,17 +27,54 @@
     {% endif %}
 </article>
 
-<div class="detail-actions">
-    <a class="btn btn-secondary" href="{{ url_for('home') }}">Back to all posts</a>
+<div class="detail-actions {% if is_admin %}admin-detail-actions{% endif %}">
+
+    <a class="btn btn-secondary" href="{{ url_for('home') }}">
+        Back to all posts
+    </a>
+
     {% if is_admin %}
-        <a class="btn" href="{{ url_for('item_edit', item_id=item._id) }}">Edit this post</a>
-        {% if not item.resolved %}
-            <form action="{{ url_for('item_resolve', item_id=item._id) }}" method="POST">
-                <button class="btn" type="submit">Mark as Resolved</button>
+
+        <a class="btn" href="{{ url_for('item_edit', item_id=item._id) }}">
+            Edit this post
+        </a>
+
+        {% if item.get('returned') or item.get('resolved') %}
+
+    <form action="{{ url_for('item_unresolve', item_id=item._id) }}"
+          method="POST">
+        <button class="btn" type="submit">
+            Mark as Active
+        </button>
+    </form>
+
+        {% elif item.get('status') == 'found' %}
+
+            <form action="{{ url_for('item_resolve', item_id=item._id) }}"
+                method="POST">
+                <button class="btn" type="submit">
+                    Mark as Returned
+                </button>
             </form>
+
+        {% elif item.get('status') == 'lost' %}
+
+            <form action="{{ url_for('item_resolve', item_id=item._id) }}"
+                method="POST">
+                <button class="btn" type="submit">
+                    Mark as Resolved
+                </button>
+            </form>
+
         {% endif %}
-        <a class="btn btn-danger" href="{{ url_for('item_delete', item_id=item._id) }}">Delete this post</a>
+
+        <a class="btn btn-danger"
+           href="{{ url_for('item_delete', item_id=item._id) }}">
+            Delete this post
+        </a>
+
     {% endif %}
+
 </div>
 
 
