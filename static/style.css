@@ -245,3 +245,83 @@ body {
       font-size: 17px;
   }
 }
+
+/* Mobile bottom navigation */
+
+@media (max-width: 600px) {
+
+  body {
+      padding-bottom: 85px;
+  }
+
+  .site-header {
+      border-bottom: none;
+  }
+
+  .navbar {
+      padding: 16px;
+  }
+
+  .site-logo {
+      font-size: 18px;
+  }
+
+  .nav-links {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 4px;
+
+      background-color: white;
+      border-top: 1px solid #ddd;
+
+      padding: 10px 8px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+
+      z-index: 100;
+  }
+
+  .nav-links a {
+      flex: 1;
+      text-align: center;
+
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #444;
+
+      padding: 12px 2px;
+      border-radius: 8px;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+      background-color: #f0f4ff;
+      color: #2563eb;
+  }
+
+  .container {
+      padding: 16px;
+  }
+
+  .page-heading h1 {
+      font-size: 24px;
+  }
+
+  .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+  }
+
+  .post-card {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+  }
+}

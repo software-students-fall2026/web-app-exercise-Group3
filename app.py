@@ -35,12 +35,15 @@ def inject_admin():
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find({"returned": {"$ne": True}}).sort("_id", -1))
+    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("_id", -1))
     return render_template("index.html", items=items)
 
-# History page - show resolved posts, newest first
+# History page - admin only
 @app.route("/history")
 def history():
+    if not os.getenv("ADMIN_MODE") == "1":
+        abort(403)
+
     items = list(
         collection.find({"returned": True})
         .sort("date_returned", -1)
