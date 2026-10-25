@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<section class="page-heading">
+<section class="page-heading item-detail-page-heading">
     <h1>{{ item.item_name }}</h1>
     <p class="status-badge status-{{ item.status }}">{{ item.status | title }}</p>
     {% if item.get('returned') %}
