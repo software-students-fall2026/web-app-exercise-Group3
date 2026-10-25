@@ -199,3 +199,49 @@ body {
 .btn-danger:hover {
   background-color: #7a1616;
 }
+
+/* History page */
+
+.history-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.history-card-header h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.status-resolved {
+  background-color: #e6f4ea;
+  color: #1b5e20;
+  white-space: nowrap;
+}
+
+.view-details {
+  display: block;
+  margin-top: 15px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Mobile screens */
+
+@media (max-width: 600px) {
+  .posts {
+      grid-template-columns: 1fr;
+      gap: 12px;
+  }
+
+  .post-card {
+      padding: 16px;
+      border-radius: 12px;
+  }
+
+  .history-card-header h2 {
+      font-size: 17px;
+  }
+}

@@ -35,9 +35,17 @@ def inject_admin():
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("_id", -1))
+    items = list(collection.find({"resolved": {"$ne": True}}).sort("_id", -1))
     return render_template("index.html", items=items)
 
+# History page - show resolved posts, newest first
+@app.route("/history")
+def history():
+    items = list(
+        collection.find({"returned": True})
+        .sort("_id", -1)
+    )
+    return render_template("history.html", items=items)
 
 # Add a new lost or found post
 @app.route("/add", methods=["GET", "POST"])

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}History | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>History</h1>
+    <p>View items that have been resolved.</p>
+</section>
+
+<section class="posts">
+    {% if items %}
+        {% for item in items %}
+            <a class="post-card"
+               href="{{ url_for('item_detail', item_id=item._id) }}">
+
+                <div class="history-card-header">
+                    <h2>{{ item.get('item_name') or 'Unnamed item' }}</h2>
+                    <span class="status-badge status-resolved">
+                        Resolved
+                    </span>
+                </div>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ item.get('location') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>Date reported:</strong>
+                    {{ item.get('date_reported') or 'Not provided' }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ (item.get('description') or 'Not provided') | truncate(100) }}
+                </p>
+
+                <span class="view-details">View Details →</span>
+
+            </a>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">
+            No resolved items yet.
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}
