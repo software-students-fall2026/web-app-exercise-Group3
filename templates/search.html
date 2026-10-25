@@ -4,11 +4,11 @@
 
 {% block content %}
 
-<section class="page-heading">
+<section class="page-heading form-page-heading">
     <h1>Search Posts</h1>
 </section>
 
-<form method="GET" action="{{ url_for('search') }}">
+<form method="GET" action="{{ url_for('search') }}" class="search-form">
     <input type="text" name="keyword" placeholder="Item name" value="{{ keyword }}">
 
     <select name="status">
@@ -20,7 +20,7 @@
     <button class="btn" type="submit">Search</button>
 </form>
 
-<section class="posts">
+<section class="posts search-results">
     {% if items %}
         {% for item in items %}
             <a class="post-card" href="{{ url_for('item_detail', item_id=item._id) }}">

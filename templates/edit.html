@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<section class="page-heading">
+<section class="page-heading form-page-heading">
     <h1>Edit Post</h1>
 </section>
 
@@ -12,7 +12,7 @@
     <p>{{ error }}</p>
 {% endif %}
 
-<form method="POST">
+<form method="POST" class="post-form">
     <p>
         <label>Item name<br>
             <input type="text" name="item_name" value="{{ item.item_name }}">
@@ -52,9 +52,16 @@
         </label>
     </p>
 
-    <button class="btn" type="submit">Save Changes</button>
-</form>
+    <div class="form-actions">
+        <a class="btn btn-secondary"
+           href="{{ url_for('item_detail', item_id=item._id) }}">
+            Cancel
+        </a>
 
-<p><a href="{{ url_for('item_detail', item_id=item._id) }}">Cancel</a></p>
+        <button class="btn" type="submit">
+            Save Changes
+        </button>
+    </div>
+</form>
 
 {% endblock %}

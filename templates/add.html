@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<section class="page-heading">
+<section class="page-heading form-page-heading">
     <h1>Add Post</h1>
     <p>Report an item you lost or found on campus.</p>
 </section>
@@ -13,7 +13,7 @@
     <p>{{ error }}</p>
 {% endif %}
 
-<form method="POST">
+<form method="POST" class="post-form">
     <p>
         <label>Item name<br>
             <input type="text" name="item_name" value="{{ item.item_name }}">
@@ -26,14 +26,30 @@
         </label>
     </p>
 
-    <p>
-        <label>Lost or found<br>
-            <select name="status">
-                <option value="lost" {% if item.status == "lost" %}selected{% endif %}>Lost</option>
-                <option value="found" {% if item.status == "found" %}selected{% endif %}>Found</option>
-            </select>
-        </label>
-    </p>
+    <fieldset class="status-fieldset">
+        <legend>Lost or found</legend>
+    
+        <div class="status-options">
+            <label class="status-option">
+                <input type="radio"
+                        name="status"
+                        value="lost"
+                        {% if item.status == "lost" %}checked{% endif %}
+                        required>
+                Lost
+            </label>
+    
+            <label class="status-option">
+                <input type="radio"
+                        name="status"
+                        value="found"
+                        {% if item.status == "found" %}checked{% endif %}
+                        required>
+                Found
+            </label>
+        </div>
+    </fieldset>
+
 
     <p>
         <label>Location<br>
@@ -53,9 +69,15 @@
         </label>
     </p>
 
-    <button class="btn" type="submit">Add Post</button>
-</form>
+    <div class="form-actions">
+        <a class="btn btn-secondary" href="{{ url_for('home') }}">
+            Cancel
+        </a>
 
-<p><a href="{{ url_for('home') }}">Cancel</a></p>
+        <button class="btn" type="submit">
+            Add Post
+        </button>
+    </div>
+</form>
 
 {% endblock %}
