@@ -26,31 +26,30 @@
         </label>
     </p>
 
-    <p>
-        <fieldset class="status-fieldset">
-            <legend>Lost or found</legend>
-        
-            <div class="status-options">
-                <label class="status-option">
-                    <input type="radio"
-                           name="status"
-                           value="lost"
-                           {% if item.status == "lost" %}checked{% endif %}
-                           required>
-                    Lost
-                </label>
-        
-                <label class="status-option">
-                    <input type="radio"
-                           name="status"
-                           value="found"
-                           {% if item.status == "found" %}checked{% endif %}
-                           required>
-                    Found
-                </label>
-            </div>
-        </fieldset>
-    </p>
+    <fieldset class="status-fieldset">
+        <legend>Lost or found</legend>
+    
+        <div class="status-options">
+            <label class="status-option">
+                <input type="radio"
+                        name="status"
+                        value="lost"
+                        {% if item.status == "lost" %}checked{% endif %}
+                        required>
+                Lost
+            </label>
+    
+            <label class="status-option">
+                <input type="radio"
+                        name="status"
+                        value="found"
+                        {% if item.status == "found" %}checked{% endif %}
+                        required>
+                Found
+            </label>
+        </div>
+    </fieldset>
+
 
     <p>
         <label>Location<br>
