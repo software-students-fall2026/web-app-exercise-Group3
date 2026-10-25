@@ -35,7 +35,22 @@ def inject_admin():
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("_id", -1))
+    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("date_reported", -1))
+    if os.getenv("ADMIN_MODE") == "1":
+        lost_count = sum(
+            1 for item in items if item.get("status") == "lost"
+        )
+
+        found_count = sum(
+            1 for item in items if item.get("status") == "found"
+        )
+
+        return render_template(
+            "admin_dashboard.html",
+            items=items,
+            lost_count=lost_count,
+            found_count=found_count
+        )
     return render_template("index.html", items=items)
 
 # History page - admin only

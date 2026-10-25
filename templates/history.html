@@ -33,6 +33,17 @@
                 </p>
 
                 <p>
+                  <strong>Date returned:</strong>
+                  {% if item.get('date_returned') %}
+                      {{ item.date_returned.strftime('%Y-%m-%d')
+                         if item.date_returned.strftime is defined
+                         else item.date_returned }}
+                  {% else %}
+                      Not provided
+                  {% endif %}
+                </p>
+
+                <p>
                     <strong>Description:</strong>
                     {{ (item.get('description') or 'Not provided') | truncate(100) }}
                 </p>

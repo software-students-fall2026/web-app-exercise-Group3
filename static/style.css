@@ -325,3 +325,77 @@ body {
       border-radius: 14px;
   }
 }
+
+/* Admin Dashboard */
+
+.admin-dashboard {
+  width: 100%;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.summary-card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  min-width: 0;
+}
+
+.summary-card span {
+  font-size: 14px;
+  color: #666;
+}
+
+.summary-card h2 {
+  font-size: 32px;
+  margin: 10px 0 0;
+}
+
+.summary-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.summary-link p {
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.dashboard-posts > h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.admin-post-card {
+  border-radius: 14px;
+}
+
+.post-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Smaller phones */
+
+@media (max-width: 380px) {
+  .summary-card {
+      padding: 14px;
+  }
+
+  .summary-card h2 {
+      font-size: 28px;
+  }
+
+  .summary-card span {
+      font-size: 12px;
+  }
+}
