@@ -214,7 +214,7 @@ body {
   font-size: 18px;
 }
 
-.status-resolved {
+.status-returned {
   background-color: #e6f4ea;
   color: #1b5e20;
   white-space: nowrap;

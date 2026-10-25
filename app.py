@@ -35,7 +35,7 @@ def inject_admin():
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find({"resolved": {"$ne": True}}).sort("_id", -1))
+    items = list(collection.find({"returned": {"$ne": True}}).sort("_id", -1))
     return render_template("index.html", items=items)
 
 # History page - show resolved posts, newest first
@@ -43,7 +43,7 @@ def home():
 def history():
     items = list(
         collection.find({"returned": True})
-        .sort("_id", -1)
+        .sort("date_returned", -1)
     )
     return render_template("history.html", items=items)
 

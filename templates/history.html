@@ -6,7 +6,7 @@
 
 <section class="page-heading">
     <h1>History</h1>
-    <p>View items that have been resolved.</p>
+    <p>View items that have been returned.</p>
 </section>
 
 <section class="posts">
@@ -17,8 +17,8 @@
 
                 <div class="history-card-header">
                     <h2>{{ item.get('item_name') or 'Unnamed item' }}</h2>
-                    <span class="status-badge status-resolved">
-                        Resolved
+                    <span class="status-badge status-returned">
+                        Returned
                     </span>
                 </div>
 
@@ -43,7 +43,7 @@
         {% endfor %}
     {% else %}
         <p class="empty-message">
-            No resolved items yet.
+            No returned items yet.
         </p>
     {% endif %}
 </section>
