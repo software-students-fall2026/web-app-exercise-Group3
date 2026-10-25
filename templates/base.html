@@ -17,10 +17,27 @@
             </a>
 
             <div class="nav-links">
-                <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('search') }}">Search</a>
-                <a href="{{ url_for('add_post') }}">Add Post</a>
-
+                {% if is_admin %}
+                    <a href="{{ url_for('home') }}">
+                        Dashboard
+                    </a>
+            
+                    <a href="{{ url_for('history') }}">
+                        History
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('home') }}">
+                        Home
+                    </a>
+                {% endif %}
+            
+                <a href="{{ url_for('search') }}">
+                    Search
+                </a>
+            
+                <a href="{{ url_for('add_post') }}">
+                    Add Post
+                </a>
             </div>
         </nav>
     </header>

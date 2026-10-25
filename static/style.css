@@ -199,3 +199,270 @@ body {
 .btn-danger:hover {
   background-color: #7a1616;
 }
+
+/* History page */
+
+.history-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.history-card-header h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.status-returned {
+  background-color: #e6f4ea;
+  color: #1b5e20;
+  white-space: nowrap;
+}
+
+.view-details {
+  display: block;
+  margin-top: 15px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Mobile screens */
+
+@media (max-width: 600px) {
+  .posts {
+      grid-template-columns: 1fr;
+      gap: 12px;
+  }
+
+  .post-card {
+      padding: 16px;
+      border-radius: 12px;
+  }
+
+  .history-card-header h2 {
+      font-size: 17px;
+  }
+}
+
+/* Mobile bottom navigation */
+
+@media (max-width: 600px) {
+
+  body {
+      padding-bottom: 85px;
+  }
+
+  .site-header {
+      border-bottom: none;
+  }
+
+  .navbar {
+      padding: 16px;
+  }
+
+  .site-logo {
+      font-size: 18px;
+  }
+
+  .nav-links {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 4px;
+
+      background-color: white;
+      border-top: 1px solid #ddd;
+
+      padding: 10px 8px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+
+      z-index: 100;
+  }
+
+  .nav-links a {
+      flex: 1;
+      text-align: center;
+
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #444;
+
+      padding: 12px 2px;
+      border-radius: 8px;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+      background-color: #f0f4ff;
+      color: #2563eb;
+  }
+
+  .container {
+      padding: 16px;
+  }
+
+  .page-heading h1 {
+      font-size: 24px;
+  }
+
+  .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+  }
+
+  .post-card {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+  }
+}
+
+/* Admin Dashboard */
+
+.admin-dashboard {
+  width: 100%;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.summary-card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  min-width: 0;
+}
+
+.summary-card span {
+  font-size: 14px;
+  color: #666;
+}
+
+.summary-card h2 {
+  font-size: 32px;
+  margin: 10px 0 0;
+}
+
+.summary-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.summary-link p {
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.dashboard-posts > h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.admin-post-card {
+  border-radius: 14px;
+}
+
+.post-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Smaller phones */
+
+@media (max-width: 380px) {
+  .summary-card {
+      padding: 14px;
+  }
+
+  .summary-card h2 {
+      font-size: 28px;
+  }
+
+  .summary-card span {
+      font-size: 12px;
+  }
+}
+
+/* Admin detail actions */
+
+.admin-detail-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-detail-actions .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 46px;
+  padding: 10px;
+
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Make the form fill its grid cell */
+
+.admin-detail-actions form {
+  width: 100%;
+  margin: 0;
+}
+
+/* Back, Edit, Mark Returned */
+
+.admin-detail-actions .btn:not(.btn-danger):hover {
+  background-color: #f3f4f6;
+}
+
+/* Delete button */
+
+.admin-detail-actions .btn-danger {
+  background-color: #b91c1c;
+  color: white;
+  border: 1px solid #b91c1c;
+}
+
+.admin-detail-actions .btn-danger:hover {
+  background-color: #991b1b;
+}
+
+/* Keyboard accessibility */
+
+.admin-detail-actions .btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.status-resolved {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}

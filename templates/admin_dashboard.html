@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="admin-dashboard">
+
+    <div class="page-heading">
+        <h1>Admin Dashboard</h1>
+        <p>Manage active lost-and-found posts.</p>
+    </div>
+
+    <!-- Dashboard summary -->
+    <section class="dashboard-summary">
+
+      <div class="summary-card">
+          <span>Active Lost</span>
+          <h2>{{ lost_count }}</h2>
+      </div>
+  
+      <div class="summary-card">
+          <span>Active Found</span>
+          <h2>{{ found_count }}</h2>
+      </div>
+  
+    </section>
+
+    <!-- Active posts -->
+    <section class="dashboard-posts">
+
+        <h2>Active Posts</h2>
+
+        <div class="posts">
+            {% if items %}
+                {% for item in items %}
+
+                    <a class="post-card admin-post-card"
+                       href="{{ url_for('item_detail', item_id=item._id) }}">
+
+                        <div class="history-card-header">
+                            <h2>
+                                {{ item.get('item_name') or 'Unnamed item' }}
+                            </h2>
+
+                            <span class="status-badge status-{{ item.get('status', '') | lower }}">
+                                {{ item.get('status', 'Unknown') | title }}
+                            </span>
+                        </div>
+
+                        <p>
+                            <strong>Location:</strong>
+                            {{ item.get('location') or 'Not provided' }}
+                        </p>
+
+                        <p>
+                            <strong>Date reported:</strong>
+                            {{ item.get('date_reported') or 'Not provided' }}
+                        </p>
+
+                        <p class="post-description">
+                            {{ (item.get('description') or 'No description') | truncate(100) }}
+                        </p>
+
+                        <span class="view-details">
+                            View Details →
+                        </span>
+
+                    </a>
+
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">
+                    No active posts.
+                </p>
+            {% endif %}
+        </div>
+
+    </section>
+
+</section>
+
+{% endblock %}
