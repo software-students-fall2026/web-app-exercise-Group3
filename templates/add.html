@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Add Post | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>Add Post</h1>
+    <p>Report an item you lost or found on campus.</p>
+</section>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    <p>
+        <label>Item name<br>
+            <input type="text" name="item_name" value="{{ item.item_name }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Description<br>
+            <textarea name="description">{{ item.description }}</textarea>
+        </label>
+    </p>
+
+    <p>
+        <label>Lost or found<br>
+            <select name="status">
+                <option value="lost" {% if item.status == "lost" %}selected{% endif %}>Lost</option>
+                <option value="found" {% if item.status == "found" %}selected{% endif %}>Found</option>
+            </select>
+        </label>
+    </p>
+
+    <p>
+        <label>Location<br>
+            <input type="text" name="location" value="{{ item.location }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Date reported<br>
+            <input type="date" name="date_reported" value="{{ item.date_reported }}">
+        </label>
+    </p>
+
+    <p>
+        <label>Contact email<br>
+            <input type="email" name="contact_email" value="{{ item.contact_email }}">
+        </label>
+    </p>
+
+    <button class="btn" type="submit">Add Post</button>
+</form>
+
+<p><a href="{{ url_for('home') }}">Cancel</a></p>
+
+{% endblock %}

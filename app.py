@@ -26,11 +26,45 @@ client = MongoClient(
 db = client[db_name]
 collection = db["items"]
 
+###Temporary admin switch until login is ready####
+@app.context_processor
+def inject_admin():
+    return {"is_admin": os.getenv("ADMIN_MODE") == "1"}
+
+
 # Homepage route
 @app.route("/")
 def home():
-    items = list(collection.find().sort("_id", -1))
+    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("_id", -1))
     return render_template("index.html", items=items)
+
+
+# Add a new lost or found post
+@app.route("/add", methods=["GET", "POST"])
+def add_post():
+    if request.method == "POST":
+        new_post = {
+            "item_name": request.form.get("item_name", "").strip(),
+            "description": request.form.get("description", "").strip(),
+            "status": request.form.get("status", "").strip(),
+            "location": request.form.get("location", "").strip(),
+            "date_reported": request.form.get("date_reported", "").strip(),
+            "contact_email": request.form.get("contact_email", "").strip(),
+        }
+
+        if "" in new_post.values() or new_post["status"] not in ("lost", "found"):
+            return render_template(
+                "add.html",
+                item=new_post,
+                error="Please fill in all fields."
+            )
+
+        new_post["returned"] = False
+        collection.insert_one(new_post)
+        return redirect(url_for("home"))
+
+    return render_template("add.html", item={})
+
 
 #Look up a single item, tolerating ids that aren't valid ObjectIds
 def find_item(item_id):
@@ -111,7 +145,7 @@ def search():
     keyword = request.args.get("keyword", "").strip()
     status = request.args.get("status", "")
 
-    query = {}
+    query = {"returned": {"$ne": True}, "resolved": {"$ne": True}}
     if keyword:
         query["item_name"] = {"$regex": re.escape(keyword), "$options": "i"}
     if status in ("lost", "found"):
