@@ -1,7 +1,6 @@
 import os
 import re
 
-from flask import Flask, render_template, request, redirect, url_for, abort
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
@@ -9,6 +8,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, url_for, abort, session
+from functools import wraps
 
 # Load environment variables
 load_dotenv()
@@ -17,7 +17,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Secret key so Flask can keep admins logged in with sessions
-app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
+app.secret_key = os.getenv("SECRET_KEY") or "dev-secret-key"
 
 # MongoDB configuration
 mongo_uri = os.environ["MONGO_URI"]
@@ -51,6 +51,15 @@ create_default_admin()
 @app.context_processor
 def inject_admin():
     return {"is_admin": session.get("is_admin", False)}
+
+# Send visitors to the login page if they aren't logged in as admin
+def admin_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if not session.get("is_admin"):
+            return redirect(url_for("login"))
+        return view(*args, **kwargs)
+    return wrapped_view
 
 # Admin login page
 @app.route("/login", methods=["GET", "POST"])
@@ -86,7 +95,7 @@ def logout():
 @app.route("/")
 def home():
     items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("date_reported", -1))
-    if os.getenv("ADMIN_MODE") == "1":
+    if session.get("is_admin"):
         lost_count = sum(
             1 for item in items if item.get("status") == "lost"
         )
@@ -105,10 +114,8 @@ def home():
 
 # History page - admin only
 @app.route("/history")
+@admin_required
 def history():
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     pipeline = [
         {
             "$match": {
@@ -185,6 +192,7 @@ def item_detail(item_id):
 
 #Delete confirmationa and deletion
 @app.route("/item/<item_id>/delete", methods=["GET", "POST"])
+@admin_required
 def item_delete(item_id):
     item = find_item(item_id)
     if item is None:
@@ -200,6 +208,7 @@ def item_delete(item_id):
 
 #Edit a post
 @app.route("/item/<item_id>/edit", methods=["GET", "POST"])
+@admin_required
 def item_edit(item_id):
     item = find_item(item_id)
     if item is None:
@@ -231,10 +240,8 @@ def item_edit(item_id):
 
 # Complete a lost or found case - admin only
 @app.route("/item/<item_id>/resolve", methods=["POST"])
+@admin_required
 def item_resolve(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:
@@ -295,10 +302,8 @@ def search():
 
 # Return a completed case to active status
 @app.route("/item/<item_id>/unresolve", methods=["POST"])
+@admin_required
 def item_unresolve(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:
