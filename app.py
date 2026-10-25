@@ -7,12 +7,16 @@ from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime, timezone
+from flask import Flask, render_template, request, redirect, url_for, abort, session
 
 # Load environment variables
 load_dotenv()
 
 # Create the Flask application
 app = Flask(__name__)
+
+# Secret key so Flask can keep admins logged in with sessions
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 
 # MongoDB configuration
 mongo_uri = os.environ["MONGO_URI"]
