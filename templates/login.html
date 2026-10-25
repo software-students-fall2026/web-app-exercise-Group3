@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login | Campus Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <h1>Admin Login</h1>
+    <p>Log in to manage posts.</p>
+</section>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    <p>
+        <label>Username<br>
+            <input type="text" name="username" value="{{ username }}" required>
+        </label>
+    </p>
+
+    <p>
+        <label>Password<br>
+            <input type="password" name="password" required>
+        </label>
+    </p>
+
+    <button class="btn" type="submit">Log In</button>
+</form>
+
+<p><a href="{{ url_for('home') }}">Back to all posts</a></p>
+
+{% endblock %}
