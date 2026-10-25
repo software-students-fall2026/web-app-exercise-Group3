@@ -3,6 +3,7 @@ import re
 
 from flask import Flask, render_template, request, redirect, url_for, abort
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -30,6 +31,21 @@ client = MongoClient(
 
 db = client[db_name]
 collection = db["items"]
+
+admins = db["admins"]
+
+# Create the default admin account if it doesn't exist yet
+def create_default_admin():
+    username = os.getenv("ADMIN_USERNAME", "admin")
+    password = os.getenv("ADMIN_PASSWORD", "admin123")
+    try:
+        if admins.find_one({"username": username}) is None:
+            admins.insert_one({"username": username, "password": password})
+    except PyMongoError:
+        print("Could not reach MongoDB to create the default admin. Is Docker running?")
+
+
+create_default_admin()
 
 ###Temporary admin switch until login is ready####
 @app.context_processor
