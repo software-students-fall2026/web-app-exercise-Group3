@@ -47,11 +47,40 @@ def create_default_admin():
 
 create_default_admin()
 
-###Temporary admin switch until login is ready####
+# Let every template know whether an admin is logged in
 @app.context_processor
 def inject_admin():
-    return {"is_admin": os.getenv("ADMIN_MODE") == "1"}
+    return {"is_admin": session.get("is_admin", False)}
 
+# Admin login page
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if session.get("is_admin"):
+        return redirect(url_for("home"))
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        admin = admins.find_one({"username": username, "password": password})
+        if admin is None:
+            return render_template(
+                "login.html",
+                username=username,
+                error="Incorrect username or password."
+            )
+
+        session["is_admin"] = True
+        session["admin_username"] = username
+        return redirect(url_for("home"))
+
+    return render_template("login.html", username="")
+
+# Log the admin out
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
 
 # Homepage route
 @app.route("/")
