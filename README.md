@@ -14,6 +14,13 @@ Students can browse, search, and create lost-and-found posts, while administrato
 
 The application is designed with a mobile-first interface so students can conveniently access it from their phones.
 
+## Team Members
+
+- **Lefei Ke (Coco)** — [GitHub](https://github.com/Carbo32N)
+- **Denise** — [GitHub](https://github.com/denisekos)
+- **Veer** - [GitHub](https://github.com/sing1179)
+- **Asritha** — [GitHub](https://github.com/scanfasri)
+
 ## User stories
 
 User stories are tracked in the [GitHub Issues](https://github.com/software-students-fall2026/web-app-exercise-Group3/issues).
