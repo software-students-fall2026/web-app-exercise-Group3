@@ -47,6 +47,30 @@ body {
   text-decoration: underline;
 }
 
+/* Account navigation */
+.nav-account {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-account a {
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+
+  padding: 10px 14px;
+
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.nav-account a:hover {
+  background-color: #f3f4f6;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;
@@ -266,14 +290,27 @@ body {
   }
 
   .navbar {
-      padding: 16px;
-  }
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 
-  .site-logo {
-      font-size: 18px;
-  }
+    padding: 16px;
+    gap: 12px;
+}
 
-  .nav-links {
+.site-logo {
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.nav-account a {
+    font-size: 12px;
+    padding: 9px 10px;
+    white-space: nowrap;
+}
+
+  .nav-main {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -687,4 +724,67 @@ body {
 
 .post-form .form-actions button:hover {
   background-color: #444;
+}
+
+/* Fix mobile bottom navigation */
+
+@media (max-width: 600px) {
+
+  .nav-links.nav-main {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 4px;
+
+      background-color: white;
+      border-top: 1px solid #ddd;
+
+      padding: 10px 8px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+
+      z-index: 100;
+  }
+
+  .nav-main a {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      padding: 12px 2px;
+      text-decoration: none;
+      color: #444;
+  }
+
+  body {
+      padding-bottom: 85px;
+  }
+}
+
+/* Admin Login */
+
+.login-form {
+  max-width: 600px;
+}
+
+.login-form .form-actions {
+  margin-top: 24px;
+}
+
+/* Login error message */
+
+.form-error {
+  padding: 12px 14px;
+
+  background-color: #fef2f2;
+  color: #991b1b;
+
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+
+  font-size: 14px;
+  line-height: 1.5;
 }

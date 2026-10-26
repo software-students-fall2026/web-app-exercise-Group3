@@ -4,31 +4,36 @@
 
 {% block content %}
 
-<section class="page-heading">
+<section class="page-heading form-page-heading">
     <h1>Admin Login</h1>
-    <p>Log in to manage posts.</p>
+    <p>Log in to manage lost-and-found posts.</p>
 </section>
 
-{% if error %}
-    <p>{{ error }}</p>
-{% endif %}
+<form class="post-form login-form" method="POST">
+    {% if error %}
+    <p class="form-error" role="alert">{{ error }}</p>
+    {% endif %}
 
-<form method="POST">
     <p>
-        <label>Username<br>
-            <input type="text" name="username" value="{{ username }}" required>
-        </label>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" value="{{ username }}" autocomplete="username" required>
     </p>
 
     <p>
-        <label>Password<br>
-            <input type="password" name="password" required>
-        </label>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
     </p>
 
-    <button class="btn" type="submit">Log In</button>
+    <div class="form-actions">
+        <a class="btn btn-secondary" href="{{ url_for('home') }}">
+            Back
+        </a>
+
+        <button class="btn" type="submit">
+            Log In
+        </button>
+    </div>
+
 </form>
-
-<p><a href="{{ url_for('home') }}">Back to all posts</a></p>
 
 {% endblock %}
