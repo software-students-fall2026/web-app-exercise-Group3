@@ -1,20 +1,41 @@
 # Web Application Exercise
 
-A campus lost-and-found board web app built with Flask, MongoDB, HTML, and CSS.
+## Campus Lost & Found
+
+A mobile-first campus lost-and-found web application built with Flask, MongoDB, HTML, and CSS.
+
+Students can report lost or found items, search existing posts, and view item details. Administrators can manage posts, track returned or resolved items, and review the history of completed cases.
 
 ## Product vision statement
 
-A web app that helps students report lost or found items on campus and find items they are looking for.
+Our goal is to provide students with a simple and accessible platform to report and find lost items on campus.
+
+Students can browse, search, and create lost-and-found posts, while administrators can manage reported items and track their status.
+
+The application is designed with a mobile-first interface so students can conveniently access it from their phones.
 
 ## User stories
 
 User stories are tracked in the [GitHub Issues](https://github.com/software-students-fall2026/web-app-exercise-Group3/issues).
 
-## Student and admin views
+### Student Features
 
-**Students** can browse active posts, search by item name, filter by lost or found, view post details, and add new posts.
+- View active lost-and-found posts.
+- Search for items by name.
+- Filter posts by Lost or Found status.
+- View post details and contact information.
+- Create new lost-and-found posts.
+- Access the application through a mobile-friendly interface.
 
-**Admins** log in to access the admin dashboard, edit and delete posts, mark items as returned or resolved, view the History tab, and reactivate completed items.
+### Admin Features
+
+- Log in and log out using an admin account.
+- View the admin dashboard with active Lost and Found post counts.
+- Edit and delete existing posts.
+- Mark found items as Returned.
+- Mark lost items as Resolved.
+- Reactivate completed posts.
+- View returned and resolved posts in the History tab, sorted by completion date.
 
 ## Steps necessary to run the software
 
@@ -46,29 +67,37 @@ python -m pip install -r requirements.txt
 
 ### 5. Create the environment file
 
+Create a `.env` file using the example configuration:
+
 ```bash
 cp env.example .env
 ```
 
-The default configuration is:
+Update `.env` with the following information:
 
-```text
+```env
 MONGO_URI=mongodb://localhost:27017/
 MONGO_DB_NAME=campus_board
-SECRET_KEY=change-me
+SECRET_KEY=your-generated-secret-key
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin123
 ```
 
-`SECRET_KEY` is used by Flask to keep admins logged in. Replace `change-me` with any long random string, for example the output of:
+Generate a random secret key using:
 
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
+Replace `your-generated-secret-key` with the generated value.
+
+The `.env` file is excluded from GitHub through `.gitignore` and should not be committed.
+
 ### 6. Start MongoDB with Docker
 
 Make sure Docker Desktop is installed and running.
+
+Start MongoDB:
 
 ```bash
 docker compose up -d
@@ -90,34 +119,42 @@ Open http://127.0.0.1:5000 in your browser.
 
 The homepage retrieves and displays records from MongoDB.
 
-If the collection is empty, the page displays "No posts available yet."
+If no posts are available, the application displays an empty-state message.
 
-On macOS, if port 5000 is already in use (often by AirPlay Receiver), run the app on another port instead:
+If port 5000 is already in use,  start Flask on another port:
 
 ```bash
 flask --app app run --debug --port 5001
 ```
 
-Then open http://127.0.0.1:5001.
+Then visit:
 
-### 8. Log in as an admin
+ http://127.0.0.1:5001.
 
-Click **Admin Login** in the navigation bar, or go to `/login`.
+### 8. Admin Login
 
-A default admin account is created automatically the first time the app starts while MongoDB is running:
+Click **Admin Login** in the top-right corner of the application.
+
+For local testing, the default credentials are:
 
 ```text
 Username: admin
 Password: admin123
 ```
 
-To use different credentials, change `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your `.env` file before the first run. Admin accounts are stored in the `admins` collection in MongoDB.
+The default admin account is created automatically when Flask starts and MongoDB is available.
 
-Once logged in, the navigation bar shows the Dashboard and History tabs. Click **Log Out** to return to the student view.
+To use different credentials, update `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your `.env` file before the first run. 
+
+Admin accounts are stored in the `admins` collection in MongoDB.
+
+After logging in, administrators can access the Dashboard, History, and item management features.
+
+Click **Log Out** to return to the student view.
 
 ### 9. Stop the application
 
-Stop Flask by pressing `Ctrl + C` in the terminal where it is running.
+Stop Flask by pressing `Ctrl + C` in the terminal.
 
 To stop MongoDB:
 
@@ -125,7 +162,7 @@ To stop MongoDB:
 docker compose down
 ```
 
-The database data is preserved in the Docker volume.
+Database data is preserved in the Docker volume.
 
 ## Task boards
 
