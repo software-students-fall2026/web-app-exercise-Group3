@@ -2,12 +2,14 @@
 import os
 import re
 
-from flask import Flask, render_template, request, redirect, url_for, abort
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime, timezone
+from flask import Flask, render_template, request, redirect, url_for, abort, session
+from functools import wraps
 
 # load environment variables
 load_dotenv()
@@ -15,7 +17,10 @@ load_dotenv()
 # create the flask app
 app = Flask(__name__)
 
-# connect to mongodb
+# Secret key so Flask can keep admins logged in with sessions
+app.secret_key = os.getenv("SECRET_KEY") or "dev-secret-key"
+
+# MongoDB configuration
 mongo_uri = os.environ["MONGO_URI"]
 db_name = os.getenv("MONGO_DB_NAME", "campus_board")
 
@@ -27,22 +32,70 @@ client = MongoClient(
 db = client[db_name]
 collection = db["items"]
 
+admins = db["admins"]
 
-# temporary admin mode
+# Create the default admin account if it doesn't exist yet
+def create_default_admin():
+    username = os.getenv("ADMIN_USERNAME", "admin")
+    password = os.getenv("ADMIN_PASSWORD", "admin123")
+    try:
+        if admins.find_one({"username": username}) is None:
+            admins.insert_one({"username": username, "password": password})
+    except PyMongoError:
+        print("Could not reach MongoDB to create the default admin. Is Docker running?")
+
+
+create_default_admin()
+
+# Let every template know whether an admin is logged in
 @app.context_processor
 def inject_admin():
-    return {"is_admin": os.getenv("ADMIN_MODE") == "1"}
+    return {"is_admin": session.get("is_admin", False)}
 
+# Send visitors to the login page if they aren't logged in as admin
+def admin_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if not session.get("is_admin"):
+            return redirect(url_for("login"))
+        return view(*args, **kwargs)
+    return wrapped_view
+
+# Admin login page
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if session.get("is_admin"):
+        return redirect(url_for("home"))
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        admin = admins.find_one({"username": username, "password": password})
+        if admin is None:
+            return render_template(
+                "login.html",
+                username=username,
+                error="Incorrect username or password."
+            )
+
+        session["is_admin"] = True
+        session["admin_username"] = username
+        return redirect(url_for("home"))
+
+    return render_template("login.html", username="")
+
+# Log the admin out
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
 
 # homepage
 @app.route("/")
 def home():
-    items = list(collection.find({
-        "returned": {"$ne": True},
-        "resolved": {"$ne": True}
-    }).sort("date_reported", -1))
-
-    if os.getenv("ADMIN_MODE") == "1":
+    items = list(collection.find({"returned": {"$ne": True}, "resolved": {"$ne": True}}).sort("date_reported", -1))
+    if session.get("is_admin"):
         lost_count = sum(
             1 for item in items if item.get("status") == "lost"
         )
@@ -63,10 +116,8 @@ def home():
 
 # admin history page
 @app.route("/history")
+@admin_required
 def history():
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     pipeline = [
         {
             "$match": {
@@ -148,10 +199,8 @@ def item_detail(item_id):
 
 # delete an item, admin only
 @app.route("/item/<item_id>/delete", methods=["GET", "POST"])
+@admin_required
 def item_delete(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:
@@ -170,10 +219,8 @@ def item_delete(item_id):
 
 # edit an item, admin only
 @app.route("/item/<item_id>/edit", methods=["GET", "POST"])
+@admin_required
 def item_edit(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:
@@ -210,10 +257,8 @@ def item_edit(item_id):
 
 # mark an item as returned or resolved, admin only
 @app.route("/item/<item_id>/resolve", methods=["POST"])
+@admin_required
 def item_resolve(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:
@@ -291,10 +336,8 @@ def search():
 
 # move a completed item back to active, admin only
 @app.route("/item/<item_id>/unresolve", methods=["POST"])
+@admin_required
 def item_unresolve(item_id):
-    if os.getenv("ADMIN_MODE") != "1":
-        abort(403)
-
     item = find_item(item_id)
 
     if item is None:

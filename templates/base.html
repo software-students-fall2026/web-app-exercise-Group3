@@ -39,6 +39,15 @@
                     Add Post
                 </a>
             </div>
+
+            <div class="nav-links">
+                {% if is_admin %}
+                    <span>Admin: {{ session.admin_username }}</span>
+                    <a href="{{ url_for('logout') }}">Log Out</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Admin Login</a>
+                {% endif %}
+            </div>
         </nav>
     </header>
 
