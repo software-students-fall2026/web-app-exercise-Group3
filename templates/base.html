@@ -16,7 +16,7 @@
                 Campus Lost & Found
             </a>
 
-            <div class="nav-links">
+            <div class="nav-links nav-main">
                 {% if is_admin %}
                     <a href="{{ url_for('home') }}">
                         Dashboard
@@ -40,9 +40,8 @@
                 </a>
             </div>
 
-            <div class="nav-links">
+            <div class="nav-account">
                 {% if is_admin %}
-                    <span>Admin: {{ session.admin_username }}</span>
                     <a href="{{ url_for('logout') }}">Log Out</a>
                 {% else %}
                     <a href="{{ url_for('login') }}">Admin Login</a>
